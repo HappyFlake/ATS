@@ -94,7 +94,7 @@ void LaunchMessageAPP(HWND hwnd) {   // Fixed: this function should be outside L
         return;
     }
 
-    const char* messageAppPath = "Message\\Message.exe";  // Missing semicolon here!
+    const char* messageAppPath = "Message\\Message.exe";
 
     if (CreateProcess(messageAppPath, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
         CloseHandle(pi.hProcess);
@@ -170,7 +170,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             g_username = userData.first;
             g_coins = userData.second;
 
-            // Plat
+            // Play
             hEdit2 = CreateWindowEx(0, "Button", placeholder1, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
                 380, 375, 200, 20, hwnd, (HMENU)ID_EDIT1, NULL, NULL);
 

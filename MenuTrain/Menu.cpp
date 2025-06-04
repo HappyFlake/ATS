@@ -9,6 +9,8 @@ using namespace Gdiplus;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK MsgBoxProc(HWND, UINT, WPARAM, LPARAM);
 
+
+// Random Key Generator
 std::string GenerateRandomKey(int length = 16) {
     const char charset[] =
         "0123456789"
@@ -26,6 +28,7 @@ std::string GenerateRandomKey(int length = 16) {
     return key;
 }
 
+// Glues The Keys Together When Copying!
 struct Keys {
     std::string pubkey;
     std::string privkey;
@@ -37,14 +40,14 @@ static ULONG_PTR g_gdiplusToken = 0;
 #define ID_BUTTON 1
 #define ID_EDIT1  2
 #define ID_EDIT2  3
-#define ID_TOGGLE 4 //TOGGLE LOGIN & SIGNUP
+#define ID_TOGGLE 4
 #define ID_BUTTON2  5
 
 const char placeholder1[] = "Public Key";
 const char placeholder2[] = "Private Key";
 const char placeholder3[] = "Exit";
 
-bool isSignUpMode = true; //Toggle Login or signup.
+bool isSignUpMode = true; // Toggle Login or signup.
 
 void SaveCurrentUser(const char* Publickey, int coins = 0) {
     std::ofstream file("current_user.txt");
@@ -73,7 +76,7 @@ bool DoesUsernameExist(const char* Publickey) {
     return false;
 }
 
-//Check username & password
+// Check PublicKey & PrivateKey if they correct.
 int ValidateUser(const char* Publickey, const char* Privatekey) {
     std::ifstream file("users.txt");
     std::string line, userPass = std::string(Publickey) + ":" + Privatekey;
@@ -94,7 +97,7 @@ int ValidateUser(const char* Publickey, const char* Privatekey) {
     return userExists ? -1 : 0; // -1: Wrong Privatekey, 0: Noneexistent publickey.
 }
 
-//Add new user credentials
+// Add new user credentials
 bool SaveUser(const char* Publickey, const char* Privatekey) {
     if (DoesUsernameExist(Publickey)) {
         return false;
@@ -138,8 +141,6 @@ void LaunchMessageApp(HWND hwnd) {
     if (CreateProcess(messageAppPath, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
-    } else {
-        MessageBox(hwnd, "Failed to open Message.exe", "Error", MB_OK);
     }
 }
 
@@ -147,7 +148,7 @@ void LaunchMessageApp(HWND hwnd) {
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nCmdShow) {
-
+    // Generate Key Popup
     WNDCLASS msgboxClass = {};
     msgboxClass.lpfnWndProc = MsgBoxProc;
     msgboxClass.hInstance = hInstance;
@@ -160,13 +161,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 
     HBRUSH hBlueBrush = CreateSolidBrush(RGBBlue);
 
-
+    // Main Window
     WNDCLASS wc = {};
     wc.lpfnWndProc = WndProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
-    wc.hbrBackground = hBlueBrush; // Use solid brush here
+    wc.hbrBackground = hBlueBrush;
 
+    // Displays the IMAGE!!!
     GdiplusStartupInput gdiplusStartupInput;
     GdiplusStartup(&g_gdiplusToken, &gdiplusStartupInput, NULL);
     
@@ -192,8 +194,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
         NULL, NULL, hInstance, NULL
     );
 
-    
-
     if (!hwnd) return 0;
 
     srand(static_cast<unsigned int>(time(NULL)));
@@ -210,6 +210,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
     return 0;
 }
 
+// Generate Key Popup!
 LRESULT CALLBACK MsgBoxProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     static Keys* keys = nullptr;
 
@@ -242,7 +243,6 @@ LRESULT CALLBACK MsgBoxProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             return 0;
 
         case WM_DESTROY:
-            // Free allocated keys memory
             if (keys) {
                 delete keys;
                 keys = nullptr;
@@ -275,7 +275,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             hButton2 = CreateWindowEx(0, "Button", "Exit", WS_CHILD | WS_VISIBLE | WS_BORDER,
                               430, 425, 100, 20, hwnd, (HMENU)ID_BUTTON2, NULL, NULL);
 
-            // --- New code to start in login mode ---
             SetWindowText(hButton, "Generate");
             SetWindowText(hToggle, "Already have Keys?");
 
@@ -309,7 +308,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                         memcpy(GlobalLock(hMem), clipboardText.c_str(), clipboardText.size() + 1);
                         GlobalUnlock(hMem);
                         OpenClipboard(hwnd);
-                        EmptyClipboard();
                         SetClipboardData(CF_TEXT, hMem);
                         CloseClipboard();
                     }
@@ -341,6 +339,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
                     ShowWindow(msgHwnd, SW_SHOW);
                     UpdateWindow(msgHwnd);
+
                     // Automatically switch to login mode
                     isSignUpMode = false;
                     SetWindowText(hButton, "Login");
@@ -348,20 +347,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
                     // Create the login input fields
                     if (!hEdit1) {
-                        hEdit1 = CreateWindowEx(WS_EX_CLIENTEDGE, "Edit", placeholder1, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
-                            380, 325, 200, 20, hwnd, (HMENU)ID_EDIT1, NULL, NULL);
+                        hEdit1 = CreateWindow("Edit", placeholder1, WS_CHILD | WS_VISIBLE | WS_BORDER,
+                                                380, 325, 200, 20, hwnd, (HMENU)ID_EDIT1, NULL, NULL);
                         isPlaceholder1 = true;
                     }
 
                     if (!hEdit2) {
-                        hEdit2 = CreateWindowEx(WS_EX_CLIENTEDGE, "Edit", placeholder2, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
-                            380, 350, 200, 20, hwnd, (HMENU)ID_EDIT2, NULL, NULL);
+                        hEdit2 = CreateWindow("Edit", placeholder2, WS_CHILD | WS_VISIBLE | WS_BORDER,
+                                                380, 350, 200, 20, hwnd, (HMENU)ID_EDIT2, NULL, NULL);
                         isPlaceholder2 = true;
                     }
-                } else {
-                    MessageBox(hwnd, "Error: Could not save the user. Try again.", "Error", MB_OK | MB_ICONERROR);
-                    }
-                } else {
+                }
+            } else {
                 // Login logic
                 char pubInput[100], privInput[100];
                 GetWindowText(hEdit1, pubInput, sizeof(pubInput));
@@ -394,13 +391,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                         SetWindowText(hToggle, "Back to Generate");
 
                         if (!hEdit1) {
-                            hEdit1 = CreateWindowEx(WS_EX_CLIENTEDGE, "Edit", placeholder1, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+                            hEdit1 = CreateWindow("Edit", placeholder1, WS_CHILD | WS_VISIBLE | WS_BORDER,
                                                     380, 325, 200, 20, hwnd, (HMENU)ID_EDIT1, NULL, NULL);
                             isPlaceholder1 = true;
                         }
 
                         if (!hEdit2) {
-                            hEdit2 = CreateWindowEx(WS_EX_CLIENTEDGE, "Edit", placeholder2, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+                            hEdit2 = CreateWindow("Edit", placeholder2, WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
                                                     380, 350, 200, 20, hwnd, (HMENU)ID_EDIT2, NULL, NULL);
                             isPlaceholder2 = true;
                         }
@@ -411,11 +408,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                         if (hEdit1) {
                             DestroyWindow(hEdit1);
                             hEdit1 = NULL;
+                            isPlaceholder1 = true;
                         }
 
                         if (hEdit2) {
                             DestroyWindow(hEdit2);
                             hEdit2 = NULL;
+                            isPlaceholder2 = true;
                         }
 
                         
@@ -424,40 +423,30 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                     return 0;
             }
 
-            if ((HWND)lParam == hEdit1) {
-                char text[100];
-                GetWindowText(hEdit1, text, sizeof(text));
-                if (strcmp(text, placeholder1) == 0) {
+            // Clears input bar when clicked/ in use!
+            if (HIWORD(wParam) == EN_SETFOCUS) {
+                HWND focused = (HWND)lParam;
+                if (focused == hEdit1 && isPlaceholder1) {
                     SetWindowText(hEdit1, "");
                     isPlaceholder1 = false;
-                }
-            } else if ((HWND)lParam == hEdit2) {
-                char text[100];
-                GetWindowText(hEdit2, text, sizeof(text));
-                if (strcmp(text, placeholder2) == 0) {
+                } else if (focused == hEdit2 && isPlaceholder2) {
                     SetWindowText(hEdit2, "");
                     isPlaceholder2 = false;
                 }
-            }
-
-            if (HIWORD(wParam) == EN_KILLFOCUS) {
+            } else if (HIWORD(wParam) == EN_KILLFOCUS) {
                 char text[100];
-                if ((HWND)lParam == hEdit1) {
-                    GetWindowText(hEdit1, text, sizeof(text));
-                    if (strlen(text) == 0) {
-                        SetWindowText(hEdit1, placeholder1);
-                        isPlaceholder1 = true;
-                    }
-                } else if ((HWND)lParam == hEdit2) {
-                    GetWindowText(hEdit2, text, sizeof(text));
-                    if (strlen(text) == 0) {
-                        SetWindowText(hEdit2, placeholder2);
-                        SendMessage(hEdit2, EM_SETPASSWORDCHAR, 0, 0);
-                        isPlaceholder2 = true;
-                    }
+                HWND unfocused = (HWND)lParam;
+                if (unfocused == hEdit1 && GetWindowTextLength(hEdit1) == 0) {
+                    SetWindowText(hEdit1, placeholder1);
+                    isPlaceholder1 = true;
+                } else if (unfocused == hEdit2 && GetWindowTextLength(hEdit2) == 0) {
+                    SetWindowText(hEdit2, placeholder2);
+                    isPlaceholder2 = true;
                 }
-            }
-            break;
+        }
+
+        return 0;
+        
 
         case ID_BUTTON2:
             DestroyWindow(hwnd);

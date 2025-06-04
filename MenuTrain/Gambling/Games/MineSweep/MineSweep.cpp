@@ -102,11 +102,10 @@ void LaunchExecutable(HWND hwnd, const char* exePath, const char* processName) {
     if (CreateProcess(exePath, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
-    } else {
-        MessageBox(hwnd, "Failed to open the application!", "Error", MB_OK);
     }
 }
 
+// Reset Tiles!
 void ResetGame() {
     memset(revealed, 0, sizeof(revealed));
     memset(mines, 0, sizeof(mines));
@@ -114,6 +113,7 @@ void ResetGame() {
     gameActive = false;
 }
 
+// Place Red Mine!
 void PlaceMines(int mineCount) {
     std::srand((unsigned int)std::time(nullptr));
     while (mineCount > 0) {
@@ -125,6 +125,7 @@ void PlaceMines(int mineCount) {
         }
     }
 }
+
 void SaveCoins(const std::string& user, int coins) {
     std::ofstream file("current_user.txt");
     if (file.is_open()) {
@@ -157,6 +158,7 @@ void InitGrid() {
     }
 }
 
+// Draw Tile!
 void DrawGrid(HDC hdc) {
     for (int y = 0; y < GRID_SIZE; y++) {
         for (int x = 0; x < GRID_SIZE; x++) {

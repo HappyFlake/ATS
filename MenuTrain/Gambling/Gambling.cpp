@@ -67,7 +67,7 @@ void LaunchExecutable(HWND hwnd, const char* exePath, const char* processName) {
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine, int nCmdShow) {
     const char CLASS_NAME[] = "SampleWindow";
-
+    // Create windows
     WNDCLASS wc = {};
     wc.lpfnWndProc = WndProc;
     wc.hInstance = hInstance;
@@ -151,7 +151,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
         case WM_COMMAND:
             if (LOWORD(wParam) == ID_EDIT1) {
-                LaunchExecutable(hwnd, "Gambling\\Games\\Rocket\\Rocket.exe", "Rocket.exe"); //Make Another 
+                LaunchExecutable(hwnd, "Gambling\\Games\\Rocket\\Rocket.exe", "Rocket.exe");
                 DestroyWindow(hwnd);
             } else if (LOWORD(wParam) == ID_EDIT2) {
                 LaunchExecutable(hwnd, "Gambling\\Games\\MineSweep\\MineSweep.exe", "MineSweep.exe");

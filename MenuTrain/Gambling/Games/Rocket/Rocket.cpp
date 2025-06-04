@@ -42,8 +42,9 @@ UINT_PTR gameTimer = 0;
 
 std::random_device rd;
 std::mt19937 rng(rd());
-std::uniform_real_distribution<> crashChance(0.005, 0.05);
+std::uniform_real_distribution<> crashChance(0.0005, 0.005);
 
+// Scrapped idea
 void ToggleMode(HWND hwnd) {
     autoMode = !autoMode;
     std::ostringstream msg;
@@ -83,8 +84,6 @@ void LaunchExecutable(HWND hwnd, const char* exePath, const char* processName) {
     if (CreateProcess(exePath, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
-    } else {
-        MessageBox(hwnd, "Failed to open the application!", "Error", MB_OK);
     }
 }
 

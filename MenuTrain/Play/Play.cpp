@@ -53,7 +53,6 @@ void LaunchExecutable(HWND hwnd, const char* relativePath, const char* processNa
 
     // Convert relative path to full path
     if (GetFullPathName(relativePath, MAX_PATH, fullPath, NULL) == 0) {
-        MessageBox(hwnd, "Failed to get full path!", "Error", MB_OK);
         return;
     }
 
@@ -67,8 +66,6 @@ void LaunchExecutable(HWND hwnd, const char* relativePath, const char* processNa
     if (CreateProcess(fullPath, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
-    } else {
-        MessageBox(hwnd, "Failed to open the application!", "Error", MB_OK);
     }
 }
 
