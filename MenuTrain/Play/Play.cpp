@@ -9,14 +9,10 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 #define ID_TOGGLE 2 
 #define ID_EDIT1  3
 #define ID_EDIT2  4
-#define ID_EDIT3  5
-#define ID_EDIT4  6
 
 // Default placeholders   
-const char placeholder1[] = "Home Theif"; //You in an house trying to collect cash to either use for Gambling or Shop       
-const char placeholder2[] = "View 2 Earn";  //Watch Ads.  
-const char placeholder3[] = "Tree puzzle"; //100 x 100.
-const char placeholder4[] = "Back"; 
+const char placeholder1[] = "Tree Puzzle"; // Tree Puzzle, 25 x 25.       
+const char placeholder2[] = "Back";
 
 std::string GetLastLoggedInUser() {
     std::ifstream file("current_user.txt");
@@ -146,35 +142,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
 
         case WM_CREATE:
-            // Play
-            hEdit1 = CreateWindowEx(0, "Button", placeholder1, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                380, 350, 200, 20, hwnd, (HMENU)ID_EDIT1, NULL, NULL);
+            // Tree
+            hEdit3 = CreateWindowEx(0, "Button", placeholder1, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+                380, 400, 200, 20, hwnd, (HMENU)ID_EDIT1, NULL, NULL);
 
-            // Gambling
-            hEdit2 = CreateWindowEx(0, "Button", placeholder2, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                380, 375, 200, 20, hwnd, (HMENU)ID_EDIT2, NULL, NULL);
-
-            // Chat
-            hEdit3 = CreateWindowEx(0, "Button", placeholder3, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                380, 400, 200, 20, hwnd, (HMENU)ID_EDIT3, NULL, NULL);
-
-            // Settings
-            hEdit4 = CreateWindowEx(0, "Button", placeholder4, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                430, 425, 100, 20, hwnd, (HMENU)ID_EDIT4, NULL, NULL);
-            
+            // Back
+            hEdit4 = CreateWindowEx(0, "Button", placeholder2, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+                430, 425, 100, 20, hwnd, (HMENU)ID_EDIT2, NULL, NULL);
             return 0;
 
         case WM_COMMAND:
             if (LOWORD(wParam) == ID_EDIT1) {
-                LaunchExecutable(hwnd, "Play\\Games\\Thieves\\Thieves.exe", "Thieves.exe"); //Make Another 
-                DestroyWindow(hwnd);
-            } else if (LOWORD(wParam) == ID_EDIT2) {
-                LaunchExecutable(hwnd, "Play\\Games\\Video\\Video.exe", "Video.exe");
-                DestroyWindow(hwnd);
-            } else if (LOWORD(wParam) == ID_EDIT3) {
                 LaunchExecutable(hwnd, "Play\\Games\\Tree\\Tree.exe", "Tree.exe");
                 DestroyWindow(hwnd);
-            } else if (LOWORD(wParam) == ID_EDIT4) {
+            } else if (LOWORD(wParam) == ID_EDIT2) {
                 LaunchExecutable(hwnd, "Message\\Message.exe", "Message.exe");
                 DestroyWindow(hwnd);
             } 

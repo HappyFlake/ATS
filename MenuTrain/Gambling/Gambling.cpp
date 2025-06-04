@@ -15,8 +15,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 // Default placeholders   
 const char placeholder1[] = "Rocket"; //Rocker Multiplier     
 const char placeholder2[] = "Mine sweep"; // Mine sweep  
-const char placeholder3[] = "Take out"; // Withdraw / deposit
-const char placeholder4[] = "Back"; 
+const char placeholder3[] = "Back"; 
 
 std::string GetLastLoggedInUser() {
     std::ifstream file("current_user.txt");
@@ -136,21 +135,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
 
         case WM_CREATE:
-            // Play
+            // Rocket Game
             hEdit1 = CreateWindowEx(0, "Button", placeholder1, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                380, 350, 200, 20, hwnd, (HMENU)ID_EDIT1, NULL, NULL);
+                380, 375, 200, 20, hwnd, (HMENU)ID_EDIT1, NULL, NULL);
 
-            // Gambling
+            // Minesweep
             hEdit2 = CreateWindowEx(0, "Button", placeholder2, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                380, 375, 200, 20, hwnd, (HMENU)ID_EDIT2, NULL, NULL);
+                380, 400, 200, 20, hwnd, (HMENU)ID_EDIT2, NULL, NULL);
 
-            // Chat
-            hEdit3 = CreateWindowEx(0, "Button", placeholder3, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                380, 400, 200, 20, hwnd, (HMENU)ID_EDIT3, NULL, NULL);
-
-            // Settings
-            hEdit4 = CreateWindowEx(0, "Button", placeholder4, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-                430, 425, 100, 20, hwnd, (HMENU)ID_EDIT4, NULL, NULL);
+            // Back
+            hEdit4 = CreateWindowEx(0, "Button", placeholder3, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+                430, 425, 100, 20, hwnd, (HMENU)ID_EDIT3, NULL, NULL);
             
             return 0;
 
@@ -162,12 +157,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 LaunchExecutable(hwnd, "Gambling\\Games\\MineSweep\\MineSweep.exe", "MineSweep.exe");
                 DestroyWindow(hwnd);
             } else if (LOWORD(wParam) == ID_EDIT3) {
-                LaunchExecutable(hwnd, "Gambling\\Games\\DW\\DW.exe", "DW.exe");
-                DestroyWindow(hwnd);
-            } else if (LOWORD(wParam) == ID_EDIT4) {
                 LaunchExecutable(hwnd, "Message\\Message.exe", "Message.exe");
                 DestroyWindow(hwnd);
-            } 
+            }
             return 0;
 
         case WM_DESTROY:
